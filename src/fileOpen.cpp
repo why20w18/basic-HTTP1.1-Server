@@ -39,6 +39,8 @@ void fileOpen::readFileContent(){
 void fileOpen::listPathFile(const std::string f_ex,bool isIncludeDir){
     LOG("listPathFile Func : Directory Dahil mi = " << ((isIncludeDir) ? "Evet" : "Hayir ") 
     << "Uzanti : " << ( (f_ex == "") ? "Tum Uzantilar" : f_ex));
+    FOLOG("  Dizinde yayinlacak dosyalari arama bilgisi:\n\t\tDirectory Dahil mi = " << ((isIncludeDir) ? "Evet\n" : "Hayir\n") 
+    << "\t\tUzanti = " << ( (f_ex == "") ? "Tum Uzantilar\n" : f_ex+"\n"));
     
     namespace fs = std::filesystem; //namespace tanimi
 
@@ -64,6 +66,7 @@ void fileOpen::listPathFile(const std::string f_ex,bool isIncludeDir){
 
     if(this->allFilesPathVec.empty()){
         LOG("listPathFile : aranan dosya uzantisi bulunamadi !");
+        FOLOG(this->httpPathDir << "dizininde aranan dosya uzantisi bulunamadi");
         allFilesPathVec.push_back("ARANAN DOSYA UZANTISI BULUNAMADI");
     }
 }
@@ -75,8 +78,9 @@ fileOpen* fileOpen::initLister(const std::string &f_ex,bool isIncludeDir){
 }
 
 void fileOpen::outputPaths(){
+    FOLOG(this->httpPathDir << " dizinindeki HTTP serverda yayinlanan dosyalariniz");
     for(auto x : allFilesPathVec)
-        LOG(x);
+        FOLOG(x);
 }
 
 std::vector<std::string>& fileOpen::getPathsVec(){

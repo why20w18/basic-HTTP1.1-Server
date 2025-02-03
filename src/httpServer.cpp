@@ -1,16 +1,23 @@
 #include "../include/httpServer.hpp"
 
+httpServer::httpServer(uint32_t portNo ,const std::string &specialExtension,bool isIncludeDir,const std::string &httpPathDirectory)
+:portNo(portNo){
+    fileOpen *fop = new fileOpen(httpPathDirectory);
+
+    fop->initLister();
+
+
+    delete fop;
+}
+
+
+
 httpServer::httpServer(uint32_t portNo,std::vector<std::string>& contents,uint32_t contentSize)
 :portNo(portNo){
     this->contents = contents;
     this->contentSize = contentSize;
  
     this->p_io = std::make_unique<boost::asio::io_context>();
-   //this->p_socket = std::make_unique<boost::asio::ip::tcp::socket>(*p_io);
-}
-
-httpServer::~httpServer(){
-    p_socket->close();
 }
 
 
@@ -65,6 +72,7 @@ void httpServer::httpRun(){
     }
     catch(std::exception &e){
         LOG("httpRun Func Exception: " << e.what());
+        std::cerr << "httpRun Func Exception: " << e.what() << "\n";
     }
     
 }
@@ -79,21 +87,23 @@ std::string httpServer::recvRequestPacket(){
 
         boost::system::error_code asio_err_code;
         int recvLength = p_socket->read_some(buffer(requestPacket),asio_err_code);
-        SLOG("istek paketinin boyutu --> " << recvLength);
+        SLOG("Istek paketinin boyutu = " << recvLength);
 
         if(asio_err_code){
             SLOG("paket okunamadi !");
             LOG("recvRequestPacket Func : paket okumada hata");
+            std::cerr << "recvRequestPacket Func : paket okumada hata" << "\n"; 
             return "";
         }
 
         //gelen paketin sadece okunan uzunlugunu loglama
         std::string gelenRequest(requestPacket,recvLength);
-        SLOG("gelen paket icerigi : \n" << gelenRequest);
+        SLOG("Gelen paket icerigi : \n" << gelenRequest);
 
         return gelenRequest;
     }
     catch(std::exception &e){
         LOG("recvRequestPacket Func Exception: " << e.what());
+        std::cerr << "recvRequestPacket Func Exception: " << e.what() << "\n"; 
     }
 }

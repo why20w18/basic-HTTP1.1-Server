@@ -19,6 +19,7 @@ SET(PROGRAM_SRC
     ${DIZIN_SRC}/main.cpp
     ${DIZIN_SRC}/fileOpen.cpp
     ${DIZIN_SRC}/httpServer.cpp
+    ${DIZIN_SRC}/serverCommands.cpp
     
 )
 
@@ -26,6 +27,7 @@ SET(PROGRAM_INCLUDE
     ${DIZIN_INCLUDE}/fileProcess.hpp
     ${DIZIN_INCLUDE}/fileOpen.hpp
     ${DIZIN_INCLUDE}/httpServer.hpp
+    ${DIZIN_INCLUDE}/serverCommands.hpp
 )
 #PROGRAM DIZINLERININ AYARLANMASI #PROGRAM DIZINLERININ AYARLANMASI
 
@@ -82,9 +84,5 @@ elseif(UNIX)
             ${PROJECT_NAME} 
             ${PROGRAM_SRC}
     )
-
-    #target_link_libraries(
-    #    ${PROJECT_NAME}
-    #)
 
 endif()
