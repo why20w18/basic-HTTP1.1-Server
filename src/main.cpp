@@ -1,14 +1,14 @@
 #include <iostream>
-#include <boost/asio.hpp>
 
 #include "../include/fileOpen.hpp"
+
 
 using namespace std;
 
 int main(){
 
     cout << "hello world" << endl;
-
+    //system("pwd");
 /*  
     //TEST-1//
     fileOpen fop(".");
@@ -27,14 +27,18 @@ int main(){
 
     //TEST-2//
     fileOpen fop("src/http");
+    //system("cd");
     fop.initLister()->outputPaths();
     fop.readFileContent();
+    
+
     fop.outputContents(0); //test_bir icerigini bastirdi
     cout << endl;
     fop.outputContents(1); //hatali erisim
 
     cout << endl;
     fop.outputContents(2); //hatali erisim
+
 
 
 

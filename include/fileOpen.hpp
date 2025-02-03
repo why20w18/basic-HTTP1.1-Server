@@ -14,23 +14,27 @@ class fileOpen{
 private:
     std::string httpPathDir;
     
-    std::unique_ptr<std::ifstream> reader;
-    std::unique_ptr<std::vector<std::string>> contents; //content allfilespath'den sonra baslatilmali
+    std::unique_ptr<std::ifstream> p_reader;
+    std::unique_ptr<std::vector<std::string>> p_contents; //content allfilespath'den sonra baslatilmali
 
     std::vector<std::string> allFilesPathVec;
     
-    void listPathFile(const std::string& f_ex = "",bool isIncludeDir=false);
+    void listPathFile(const std::string f_ex = "",bool isIncludeDir=false);
 
 public:
     fileOpen(const std::string &httpPathDir);
     
-    fileOpen* initLister(const std::string& f_ex = "",bool isIncludeDir=false);
+    fileOpen* initLister(const std::string &f_ex = "",bool isIncludeDir=false);
     
     void outputPaths();
-    std::vector<std::string>& getPathsVec();
+    
 
     void readFileContent();
     void outputContents(int contentNo);
+
+protected:
+    std::vector<std::string>& getPathsVec();
+
 };
 
 

@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 PROJECT(HTTP_SERVER)
 
 SET(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
@@ -59,7 +61,17 @@ endif()
 
 
 if(WIN32)
+    add_executable(
+        ${PROJECT_NAME} 
+        ${PROGRAM_SRC}
+        )
 
+    target_link_libraries(
+        ${PROJECT_NAME}
+        Boost::system
+        Boost::thread
+        ws2_32
+    )
 
 elseif(UNIX)
     include_directories(

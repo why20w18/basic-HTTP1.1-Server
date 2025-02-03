@@ -3,7 +3,7 @@
 if [ $# -ne 1 ]; then
     echo "GECERSIZ ARGUMAN GIRDINIZ !"
 
-elif [ "$1" == "compile" ] || [ "$1" == "c" ]; then
+elif [ "$1" == "release-compile" ] || [ "$1" == "rc" ]; then
     clear
     echo "::::::::::Linux release compile started::::::::::"
     rm -rf build
@@ -13,7 +13,7 @@ elif [ "$1" == "compile" ] || [ "$1" == "c" ]; then
     make
     echo "::::::::::Linux release finished::::::::::"
 
-elif [ "$1" == "debug-compile" ] || [ "$1" == "dc" ]; then 
+elif [ "$1" == "debug-compile" ] || [ "$1" == "c" ]; then 
     clear
     echo "::::::::::Linux debug compile started::::::::::"
     rm -rf build
