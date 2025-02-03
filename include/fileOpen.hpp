@@ -2,36 +2,35 @@
 #define __FILE_OPEN_HPP__
 
 #include <string>
-#include <fstream>
 #include <memory>
 #include <vector>
 #include <filesystem>
 #include <iostream>
+#include <fstream>
 
 #include "debug.hpp"
 
 class fileOpen{
 private:
     std::string httpPathDir;
-    std::unique_ptr<std::fstream> reader;
-    std::vector<std::string> allFilesPathVec;
+    
+    std::unique_ptr<std::ifstream> reader;
+    std::unique_ptr<std::vector<std::string>> contents; //content allfilespath'den sonra baslatilmali
 
-    void listPathFile(bool isIncludeDir=false);
-    void listPathFile(const std::string &fileExtensionFilter);
-    void readFileContent();
+    std::vector<std::string> allFilesPathVec;
+    
+    void listPathFile(const std::string& f_ex = "",bool isIncludeDir=false);
 
 public:
     fileOpen(const std::string &httpPathDir);
-
     
-    
-    fileOpen* initLister(bool isIncludeDir=false);
-    fileOpen* initLister(const std::string &fileExtensionFilter);
+    fileOpen* initLister(const std::string& f_ex = "",bool isIncludeDir=false);
     
     void outputPaths();
+    std::vector<std::string>& getPathsVec();
 
-
-    std::vector<std::string>& getAllFilesPathVec();
+    void readFileContent();
+    void outputContents(int contentNo);
 };
 
 
