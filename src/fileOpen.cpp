@@ -1,5 +1,7 @@
 #include "../include/fileOpen.hpp"
 
+int fileOpen::contentNo = 0;
+
 fileOpen::fileOpen(const std::string &httpPathDir){
     this->httpPathDir  = httpPathDir;
     
@@ -9,7 +11,7 @@ fileOpen::fileOpen(const std::string &httpPathDir){
 
 
 void fileOpen::readFileContent(){
-    static int contentNo = 0;
+   
     if(this->allFilesPathVec.empty()){
         LOG("readFileContent : ilk once initLister kullanarak dosya yollarini cikart");
         return;
@@ -81,6 +83,11 @@ std::vector<std::string>& fileOpen::getPathsVec(){
     return this->allFilesPathVec;
 }
 
+ std::vector<std::string>* fileOpen::getContents(){
+    return p_contents.get();
+}
+
+
 void fileOpen::outputContents(int contentNo){
     if(p_contents->size()-1 >= contentNo){
         LOG("\033[0;32m<---------------- File Content No : "<< contentNo << " --------------->\033[0m");
@@ -88,5 +95,9 @@ void fileOpen::outputContents(int contentNo){
     }
     else 
         LOG("outputContents : HATALI ERISIM");
+}
+
+int fileOpen::getContentCount(){
+    return fileOpen::contentNo;
 }
 

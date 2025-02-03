@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include "../include/fileOpen.hpp"
-
+#include "../include/httpServer.hpp"
 
 using namespace std;
 
@@ -25,6 +24,7 @@ int main(){
     fop.readFileContent();
 */
 
+/*
     //TEST-2//
     fileOpen fop("src/http");
     //system("cd");
@@ -38,9 +38,18 @@ int main(){
 
     cout << endl;
     fop.outputContents(2); //hatali erisim
+    cout << "content count : " << fop.getContentCount() << endl;
+*/
 
+    //TEST-3//SERVERI CALISTIRMA YONLENDIRMESIZ//
+    fileOpen fop("src/http");
+    fop.initLister()->outputPaths();
+    fop.readFileContent();
 
-
+    std::vector<std::string> *contents = fop.getContents();
+    int contents_size = fop.getContentCount();
+    httpServer httpServer(8090,*contents,contents_size);
+    httpServer.httpRun();
 
     return 0x0;
 }

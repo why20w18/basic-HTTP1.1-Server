@@ -12,6 +12,8 @@
 
 class fileOpen{
 private:
+    static int contentNo;
+    
     std::string httpPathDir;
     
     std::unique_ptr<std::ifstream> p_reader;
@@ -32,9 +34,10 @@ public:
     void readFileContent();
     void outputContents(int contentNo);
 
-protected:
     std::vector<std::string>& getPathsVec();
+    std::vector<std::string>* getContents();
 
+    int getContentCount();
 };
 
 
