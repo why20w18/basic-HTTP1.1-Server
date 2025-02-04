@@ -3,11 +3,16 @@
 httpServer::httpServer(uint32_t portNo ,const std::string &specialExtension,bool isIncludeDir,const std::string &httpPathDirectory)
 :portNo(portNo){
     fileOpen *fop = new fileOpen(httpPathDirectory);
-
-    fop->initLister();
-
-
+    fop->initLister(specialExtension,isIncludeDir)->outputPaths();
+    fop->readFileContent();
+    
+    this->contents = *(fop->getContents());
+    this->contentSize = fop->getContentCount();
     delete fop;
+
+    this->p_io = std::make_unique<boost::asio::io_context>();
+    httpAccept = std::make_unique<ip::tcp::acceptor>(*p_io,ip::tcp::endpoint(ip::tcp::v4(),this->portNo));
+
 }
 
 
@@ -50,14 +55,16 @@ std::string httpServer::createResponsePacket(int callContentNo){
     return response;
 }
 
-void httpServer::httpRun(){
+void httpServer::httpRun(bool isStart){
     try{
-        ip::tcp::acceptor httpAccept(*p_io,ip::tcp::endpoint(ip::tcp::v4(),this->portNo));
-        SLOG(std::to_string(portNo)+" portunda calisiyor");
-    
-        while(1){
+        if(isStart){
+        SLOG(std::to_string(portNo)+" portunda calismaya basladi");
+        
+        while(httpAccept->is_open()){
+            LOG("httpRun Func : acceptAciktir");
+
             p_socket = new ip::tcp::socket(*p_io);
-            httpAccept.accept(*p_socket);
+            httpAccept->accept(*p_socket);
             
             //gelen istek paketini alma
             recvRequestPacket();
@@ -66,9 +73,14 @@ void httpServer::httpRun(){
             
             p_socket->close();
             delete p_socket;
-
+            LOG("httpRun Func : p_socket deleted");
         }
-
+    }
+    else{
+        this->httpAccept->close();
+        SLOG("Yayin yapilan sayfayi yenilediginizde HTTP Server otomatik sonlanacaktir")
+    } 
+        
     }
     catch(std::exception &e){
         LOG("httpRun Func Exception: " << e.what());

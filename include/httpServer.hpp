@@ -3,12 +3,13 @@
 
 #include <boost/asio.hpp>
 #include <unordered_map>
+
 #include "fileOpen.hpp"
 
 #ifdef __linux__
-    #define SLOG(x) std::cout << "\033[0;32m[HTTP-SERVER-LOG] : \033[0m" << x << "\n";
+    #define SLOG(x) std::cout << "\033[0;32m\n[HTTP-SERVER-LOG] : \033[0m" << x << "\n";
 #else 
-    #define SLOG(x) std::cout << "[HTTP-SERVER-LOG] : " << x << "\n";
+    #define SLOG(x) std::cout << "\n[HTTP-SERVER-LOG] : " << x << "\n";
 #endif
 
 using namespace boost::asio;
@@ -19,9 +20,13 @@ private:
     uint32_t contentSize;
 
     std::vector<std::string> contents;
-    
+
+    std::unique_ptr<ip::tcp::acceptor> httpAccept;
     std::unique_ptr<boost::asio::io_context> p_io;
+    
     boost::asio::ip::tcp::socket *p_socket;
+    
+    
 
     //YONLENDIRME KISMI YAZILIRSA KULLANILACAK//
     //std::unique_ptr<std::unordered_map<std::string , std::string>> p_map;
@@ -37,8 +42,8 @@ public:
     //fileOpeni elle konfigure etmek icin
     httpServer(uint32_t portNo,std::vector<std::string>& contents,uint32_t contentSize);
     
-
-    void httpRun();
+    
+    void httpRun(bool isStart=true);
 
     //YONLENDIRME ISLEMLERI//
     //std::string& mappingRedirectURL();

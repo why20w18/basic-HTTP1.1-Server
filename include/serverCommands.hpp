@@ -5,22 +5,33 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 
 #include "debug.hpp"
 
+enum INPUT_CMD{
+    IC_HELP,
+    IC_EXIT,
+    IC_INFO,
+    IC_OPENFILE_SOURCE,
+    IC_OPENFILE_FILES
+};
+
 class serverCMD{
 private:
-    std::string *inputCommand;        
+    std::string *inputCommand;
+    bool isCMD;
 
-    std::string& setStandartCommand();
+    bool setStandartCommand();
     bool isCommand();
     void trim();
     std::string processCMD();
 
-    std::vector<std::string>* createCommandList();
+    void fillCommandMap(std::unordered_map<std::string,int> &commandList);
 
 public:
-    serverCMD(std::string &input);
+    serverCMD(std::string input);
+    int commandLoop();
     ~serverCMD();
 
 };
