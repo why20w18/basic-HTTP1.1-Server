@@ -11,6 +11,7 @@
 
 
 #include "debug.hpp"
+#include "crossDefines.hpp"
 
 class fileOpen{
 private:
@@ -28,6 +29,7 @@ private:
 
 public:
     std::unordered_map<std::string,int> filenameIndexMap;
+
     fileOpen(const std::string &httpPathDir);
     
     fileOpen* initLister(const std::string &f_ex = "",bool isIncludeDir=false);

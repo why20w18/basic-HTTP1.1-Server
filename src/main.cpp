@@ -23,89 +23,95 @@ void commandProcessLoop(httpServer *httpServ){
 
 
 int main(){
-
-//TEST-0//
-//    cout << "hello world" << endl;
-
-/*  
-    //TEST-1//
-    fileOpen fop(".");
-    fop.initLister(".sh")->outputPaths();
-    cout << "\n\n";
-    fop.initLister(".md",false)->outputPaths();
-     cout << "\n\n";
-    fop.initLister("",true)->outputPaths();
     
-    auto pathVec = fop.getPathsVec();
-    cout << "\n\nvec:" << pathVec.at(0) << endl;
+    char userReq;
+    SLOGN("Mevcut ayarlarla HTTP Server baslatilsin mi (y/n) :");
+    cin >> userReq;
 
-    fop.getPathsVec().clear();
-    fop.readFileContent();
-*/
+    if(userReq == 'y'){
+        fileOpen *fop = new fileOpen(DEFAULT_DIRECTORY);
+        fop->initLister()->outputPaths();
+        fop->readFileContent();   
 
-/*
-    //TEST-2//
-    fileOpen fop("src/http");
-    //system("cd");
-    fop.initLister()->outputPaths();
-    fop.readFileContent();
+        std::vector<std::string> *contents = fop->getContents();
+        int contents_size = fop->getContentCount();
+        
+        httpServer *httpServ = new httpServer(8080,*contents,contents_size,fop->getPathsVec(),fop->filenameIndexMap);
+        delete fop;
+
+        std::thread httpServerThread([&httpServ](){
+            httpServ->httpRun();
+        });
+        commandProcessLoop(httpServ);
+        httpServerThread.join();
+        delete httpServ;
+    }
     
+    else if(userReq == 'n'){
+        unsigned int userDefPort = 8080;
+        bool isIncludeDir;
 
-    fop.outputContents(0); //test_bir icerigini bastirdi
-    cout << endl;
-    fop.outputContents(1); //hatali erisim
-
-    cout << endl;
-    fop.outputContents(2); //hatali erisim
-    cout << "content count : " << fop.getContentCount() << endl;
-*/
-
-/*
-    //TEST-3//SERVERI CALISTIRMA YONLENDIRMESIZ//
-    fileOpen fop("src/http");
-    fop.initLister()->outputPaths();
-    fop.readFileContent();
-
-    std::vector<std::string> *contents = fop.getContents();
-    int contents_size = fop.getContentCount();
-    httpServer httpServer(8090,*contents,contents_size);
-    httpServer.httpRun();
-*/
-
-/*
-    //TEST-4//THREAD//
-    httpServer *httpServ = new httpServer(8080,".html");
-
-    std::thread httpServerThread([&httpServ](){
-        httpServ->httpRun();
-    });
-
-    commandProcessLoop(httpServ);
-    httpServerThread.join();
-    
-    delete httpServ;
-*/
+        std::string userDefDirectory;
+        std::string userDefFileExtension;
+        std::string userDefIncludeDir;
+        std::string userDefPortStr;
 
 
-    //TEST-5//YONLENDIRME ISLEMLERI//
-    fileOpen fop(DEFAULT_DIRECTORY);
-    fop.initLister(".html")->outputPaths();
-    fop.readFileContent();
-    
+        SLOGN("(varsayilan olarak kullanmak istediginiz alanlar icin d giriniz)")
+        SLOGN("HTTP Serverda yayinlanacak dosyalarin bulundugu dizinin tam konumu (src/http ~ d) =>");
+        cin >> userDefDirectory;
+        if(userDefDirectory.at(0) == 'd'){
+            userDefDirectory = DEFAULT_DIRECTORY;
+            SLOGN("HTTP Serverda yayinlanacak dosyalarin bulundugu dizin DEFAULT olarak baslatildi : " << DEFAULT_DIRECTORY);
+        }
+        
+        SLOGN("HTTP Serverda sadece dosyalar mi yayinlanacak (y ~ n ~ d) =>");
+        cin >> userDefIncludeDir;
+        if(userDefIncludeDir.at(0) == 'd' || userDefIncludeDir.at(0) == 'n')
+            isIncludeDir = false;
+        else 
+            isIncludeDir = true;
+        
 
-    std::vector<std::string> *contents = fop.getContents();
-    int contents_size = fop.getContentCount();
-    
-    httpServer *httpServ = new httpServer(8080,*contents,contents_size,fop.getPathsVec(),fop.filenameIndexMap);
+        SLOGN("HTTP Serverda yayinlanacak dosyalari filtrelemek istiyorsaniz .uzanti seklinde girin (.html ~ d) =>");
+        cin >> userDefFileExtension;
+        if(userDefFileExtension.at(0) == 'd'){
+            userDefFileExtension = "";
+            SLOGN("HTTP Serverda yayinlanacak dosyalarin turu DEFAULT tum uzantilar icin baslatildi : " << "tum uzantilar icin baslatildi");
+        }
 
-     std::thread httpServerThread([&httpServ](){
-        httpServ->httpRun();
-    });
-    //DEFAULT_DIRECTORY adi girerken hangi dizini gosterecekseniz linux icin / karakteri WIN32 icinse \\ karakteri ekleyin
-    commandProcessLoop(httpServ);
-    httpServerThread.join();
+        SLOGN("HTTP Server hangi port uzerinde calissin (8080 ~ d) =>");
+        cin >> userDefPortStr;
+        if(userDefPortStr.at(0) == 'd'){
+            userDefPort = 8080;
+            SLOGN("HTTP Server portu DEFAULT olarak baslatildi : " << userDefPort);
+        }
+        else{
+            try{
+                userDefPort = std::stoi(userDefPortStr);
+            } 
+            catch(const std::exception &e){
+                SLOGN("Gecersiz port numarasi girildi ! Varsayilan (8080) kullaniliyor : " << e.what());
+            }
+        }
+       
+        fileOpen *fop = new fileOpen(userDefDirectory);
+        fop->initLister(userDefFileExtension,isIncludeDir)->outputPaths();
+        fop->readFileContent();   
 
-    delete httpServ;
+        std::vector<std::string> *contents = fop->getContents();
+        int contents_size = fop->getContentCount();
+        
+        httpServer *httpServ = new httpServer(userDefPort,*contents,contents_size,fop->getPathsVec(),fop->filenameIndexMap);
+        delete fop;
+
+        std::thread httpServerThread([&httpServ](){
+            httpServ->httpRun();
+        });
+        commandProcessLoop(httpServ);
+        httpServerThread.join();
+        delete httpServ;
+    }
 
     return 0x0;
 }

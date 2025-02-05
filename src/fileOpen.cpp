@@ -1,5 +1,4 @@
 #include "../include/fileOpen.hpp"
-#include "../include/crossDefines.hpp"
 
 int fileOpen::contentNo = 0;
 
@@ -48,30 +47,36 @@ void fileOpen::listPathFile(const std::string f_ex,bool isIncludeDir){
     
     namespace fs = std::filesystem; //namespace tanimi
 
-    if(!isIncludeDir)
-    for(const auto &record : fs::directory_iterator(this->httpPathDir)){
-        if(fs::is_regular_file(record.status())){
-            if(f_ex.empty())
-                this->allFilesPathVec.push_back(record.path().string());
-            else if(f_ex == record.path().extension())
-                this->allFilesPathVec.push_back(record.path().string());
-        }
-    }
-    
-    else
-    for(const auto &r : fs::directory_iterator(this->httpPathDir)){
-        if(f_ex.empty())
-            this->allFilesPathVec.push_back(r.path().string());
-        else if(f_ex == r.path().extension())
-            this->allFilesPathVec.push_back(r.path().string());
-        else 
-            this->allFilesPathVec.push_back(r.path().string());
-    }
+    try{
+        if(!isIncludeDir)
+            for(const auto &record : fs::directory_iterator(this->httpPathDir)){
+                if(fs::is_regular_file(record.status())){
+                    if(f_ex.empty())
+                        this->allFilesPathVec.push_back(record.path().string());
+                    else if(f_ex == record.path().extension())
+                        this->allFilesPathVec.push_back(record.path().string());
+                }
+            }
+            
+            else
+            for(const auto &r : fs::directory_iterator(this->httpPathDir)){
+                if(f_ex.empty())
+                    this->allFilesPathVec.push_back(r.path().string());
+                else if(f_ex == r.path().extension())
+                    this->allFilesPathVec.push_back(r.path().string());
+                else 
+                    this->allFilesPathVec.push_back(r.path().string());
+            }
 
-    if(this->allFilesPathVec.empty()){
-        LOG("listPathFile : aranan dosya uzantisi bulunamadi !");
-        FOLOG(this->httpPathDir << "dizininde aranan dosya uzantisi bulunamadi");
-        allFilesPathVec.push_back("ARANAN DOSYA UZANTISI BULUNAMADI");
+            if(this->allFilesPathVec.empty()){
+                LOG("listPathFile : aranan dosya uzantisi bulunamadi !");
+                FOLOG(this->httpPathDir << "dizininde aranan dosya uzantisi bulunamadi");
+                allFilesPathVec.push_back("ARANAN DOSYA UZANTISI BULUNAMADI");
+            }
+    }
+    catch(std::exception &ex){
+        FOLOG("Gecersiz bir dizin girdiniz eger dizin yoksa olusturun :\n" << ex.what());
+        exit(EXIT_FAILURE);
     }
 }
 

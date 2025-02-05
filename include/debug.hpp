@@ -4,7 +4,7 @@
     #define COLOG(x) std::cout << "\033[0;34m[SERVER-COMMAND] : \033[0m\033[0;35m" << x << "\033[0m\n\n"
 
 #elif WIN32 
-    #define LOG(x) std::cout << "[DEBUG-MODE-WIN32] : " << x << "\n" //release modda burayi kaldir ve derle
+    #define LOG(x) //std::cout << "[DEBUG-MODE-WIN32] : " << x << "\n" //release modda burayi kaldir ve derle
     #define FOLOG(x)  std::cout << "[FILE-OPEN] : " << x << "\n"
     #define COLOG(x) std::cout << "[SERVER-COMMAND] : " << x << "\n\n"
 

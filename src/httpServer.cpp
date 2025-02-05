@@ -56,15 +56,20 @@ try{
         if(y == requestFile){
             isFileExist = true;
             LOG("createResponsePacket Func : ARANAN DOSYA BULUNDU ----> " << requestFile << " DIZINI ----->" << x );
+            SLOG("Client tarafindan istenen sayfa bulundu : " << requestFile << " || sayfa dizini : " << x);
         }
         LOG("createResponsePacket Func : ARANAN DOSYA ----> " << requestFile << " BAKILAN DIZIN ---->" << x);         
     }
 
-    if(requestFile == "/favicon.ico")
-        isFileExist;
+    if(requestFile == "favicon.ico")
+        isFileExist = true;
 
     if(isFileExist)
         callContentNo = filenameIndexMap[DEFAULT_REQUEST+requestFile];
+    
+    if(!isFileExist)
+        SLOG("Client tarafindan istekte bulunulan sayfa bulunamadi !");
+
     
     LOG("createResponsePacket Func : cagirlacak content no " << callContentNo << "   : cagrilan dosya adi : " << requestFile);         
 
