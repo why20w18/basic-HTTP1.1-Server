@@ -7,6 +7,8 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
+
 
 #include "debug.hpp"
 
@@ -22,8 +24,10 @@ private:
     std::vector<std::string> allFilesPathVec;
     
     void listPathFile(const std::string f_ex = "",bool isIncludeDir=false);
+    std::string getJustFilename(std::string filepath);
 
 public:
+    std::unordered_map<std::string,int> filenameIndexMap;
     fileOpen(const std::string &httpPathDir);
     
     fileOpen* initLister(const std::string &f_ex = "",bool isIncludeDir=false);
@@ -38,6 +42,7 @@ public:
     std::vector<std::string>* getContents();
 
     int getContentCount();
+    
 };
 
 

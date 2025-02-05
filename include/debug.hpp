@@ -1,5 +1,5 @@
 #ifdef DEBUG
-    #define LOG(x) std::cout << "[DEBUG-MODE] : " << x << "\n"
+    #define LOG(x) std::cout << "\033[31m[DEBUG-MODE] : " << x << "\033[0m" << "\n"
     #define FOLOG(x)  std::cout << "\033[0;33m[FILE-OPEN] : \033[0m" << x << "\n"
     #define COLOG(x) std::cout << "\033[0;34m[SERVER-COMMAND] : \033[0m\033[0;35m" << x << "\033[0m\n\n"
 

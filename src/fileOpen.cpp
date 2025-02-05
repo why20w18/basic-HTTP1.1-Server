@@ -1,4 +1,5 @@
 #include "../include/fileOpen.hpp"
+#include "../include/crossDefines.hpp"
 
 int fileOpen::contentNo = 0;
 
@@ -30,7 +31,10 @@ void fileOpen::readFileContent(){
         while(getline(*p_reader,currentFileContent)){
             p_contents->at(contentNo).append(currentFileContent+"\n");
         }
+        //burada numara ve dosya adlarini mapte tutarsak hangi indexte hangi dosya var erisiriz 
+        filenameIndexMap[getJustFilename(filePath)] = contentNo;
         contentNo++;
+
         p_reader->close();
     }
     this->p_contents->shrink_to_fit();
@@ -105,3 +109,15 @@ int fileOpen::getContentCount(){
     return fileOpen::contentNo;
 }
 
+std::string fileOpen::getJustFilename(std::string filepath){
+    int startIndex = filepath.find_last_of(DEFAULT_DELIMITER);
+    
+    if(DEFAULT_OPERATING_SYSTEM == 1) //linux
+        filepath = filepath.substr(startIndex);
+
+    else if(DEFAULT_OPERATING_SYSTEM == 2) //win32
+        filepath = filepath.substr(++startIndex);
+
+    LOG("FileOpen::getJustFilename Func : |" << filepath << "|");
+    return filepath;
+}

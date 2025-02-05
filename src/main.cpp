@@ -72,6 +72,7 @@ int main(){
     httpServer.httpRun();
 */
 
+/*
     //TEST-4//THREAD//
     httpServer *httpServ = new httpServer(8080,".html");
 
@@ -82,6 +83,28 @@ int main(){
     commandProcessLoop(httpServ);
     httpServerThread.join();
     
+    delete httpServ;
+*/
+
+
+    //TEST-5//YONLENDIRME ISLEMLERI//
+    fileOpen fop(DEFAULT_DIRECTORY);
+    fop.initLister(".html")->outputPaths();
+    fop.readFileContent();
+    
+
+    std::vector<std::string> *contents = fop.getContents();
+    int contents_size = fop.getContentCount();
+    
+    httpServer *httpServ = new httpServer(8080,*contents,contents_size,fop.getPathsVec(),fop.filenameIndexMap);
+
+     std::thread httpServerThread([&httpServ](){
+        httpServ->httpRun();
+    });
+    //DEFAULT_DIRECTORY adi girerken hangi dizini gosterecekseniz linux icin / karakteri WIN32 icinse \\ karakteri ekleyin
+    commandProcessLoop(httpServ);
+    httpServerThread.join();
+
     delete httpServ;
 
     return 0x0;

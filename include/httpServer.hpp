@@ -5,12 +5,7 @@
 #include <unordered_map>
 
 #include "fileOpen.hpp"
-
-#ifdef __linux__
-    #define SLOG(x) std::cout << "\033[0;32m\n[HTTP-SERVER-LOG] : \033[0m" << x << "\n";
-#else 
-    #define SLOG(x) std::cout << "\n[HTTP-SERVER-LOG] : " << x << "\n";
-#endif
+#include "crossDefines.hpp"
 
 using namespace boost::asio;
 
@@ -19,7 +14,11 @@ private:
     uint32_t portNo;
     uint32_t contentSize;
 
+    std::string m_gelenRequest;
     std::vector<std::string> contents;
+    std::vector<std::string> fileNamesInDirectory;
+    std::unordered_map<std::string,int> filenameIndexMap;
+
 
     std::unique_ptr<ip::tcp::acceptor> httpAccept;
     std::unique_ptr<boost::asio::io_context> p_io;
@@ -28,28 +27,34 @@ private:
     
     
 
-    //YONLENDIRME KISMI YAZILIRSA KULLANILACAK//
-    //std::unique_ptr<std::unordered_map<std::string , std::string>> p_map;
+    //YONLENDIRME ISLEMLERI//
+    std::string& mappingRedirectURL();
+    std::string getRequestPage();
+    /*
+    [HTTP-SERVER-LOG] : Gelen paket icerigi : 
+    GET /test_bir.html HTTP/1.1             ---> sadece ilk satiri okuyup hangi sayfaya gidecegini cikartabiliriz
+    Host: 127.0.0.1:8080                    ---> src/http/test_bir.html => sondaki kisimla gelen istek paketini kiyaslayip yonlendirecegiz
+    Connection: keep-alive                  ---> mevcutun contenti uzerinden cevap gonderecegiz
+    */
+    //YONLENDIRME ISLEMLERI//
 
 
-    std::string createResponsePacket(int callContentNo);
+
+    std::string createResponsePacket();
     std::string recvRequestPacket();
+    std::string getJustFilename(std::string filepath);
 
 public:
     //fileOpeni otomatik konfigure etmek icin
-    httpServer(uint32_t portNo,const std::string &specialExtension="",bool isIncludeDir=false,const std::string &httpPathDirectory="src/http");
+    httpServer(uint32_t portNo,const std::string &specialExtension="",bool isIncludeDir=false,
+    const std::string &httpPathDirectory=DEFAULT_DIRECTORY);
 
     //fileOpeni elle konfigure etmek icin
-    httpServer(uint32_t portNo,std::vector<std::string>& contents,uint32_t contentSize);
+    httpServer(uint32_t portNo,std::vector<std::string>& contents,uint32_t contentSize,
+    std::vector<std::string> fileNamesInDirectory,std::unordered_map<std::string,int> filenameIndexMap);
     
     
     void httpRun(bool isStart=true);
-
-    //YONLENDIRME ISLEMLERI//
-    //std::string& mappingRedirectURL();
-    //std::string& handleRequestSubstr();
-
-
 
 };
 #endif 
